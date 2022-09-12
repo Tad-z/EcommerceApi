@@ -94,6 +94,7 @@ exports.getProducts = async (req, res) => {
     const data = await Promise.all(mappedProducts);
     res.status(200).json({
       message: "Products retrieved successfully",
+      count: products.length,
       data,
     });
   } catch (err) {

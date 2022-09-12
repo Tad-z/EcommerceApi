@@ -55,7 +55,7 @@ exports.logIn = async (req, res) => {
     //   return res.status(401).json({ message: `Authentication failed` });
     // }
     // return res.status(200).json({ message: `Authentication successful` });
-    bcrypt.compare(req.body.password, user.password, (err, result) => {
+     bcrypt.compare(req.body.password, user.password, (err, result) => {
       if (err) {
         return res.status(401).json({
           message: `Authentication failed`,

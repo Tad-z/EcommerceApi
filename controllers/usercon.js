@@ -1,8 +1,30 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { validateEmail } = require("../Validation/validateInput");
 
 exports.signUp = async (req, res) => {
+  const user = req.body;
+  if (user.username.length < 6 || user.username.length > 15) {
+    res
+      .status(400)
+      .send({
+        message: "Username length should be between 6-15 characters long",
+      });
+    return;
+  } else if (user.password.length < 6 || user.password.length > 15) {
+    res
+      .status(400)
+      .send({
+        message: "Password should be stronger, try adding more characters",
+      });
+    return;
+  }
+  if (validateEmail(req.body.email) === false) {
+    return res.status(401).json({
+      message: `Email address is not valid`,
+    });
+  }
   try {
     const user = User.find({ username: req.body.username }).exec();
     if ((await user).length >= 1) {
@@ -50,33 +72,36 @@ exports.logIn = async (req, res) => {
         message: `Authentication failed`,
       });
     }
-    // const comparePass = bcrypt.compareSync(req.body.password, user.password);
-    // if (!comparePass) {
-    //   return res.status(401).json({ message: `Authentication failed` });
-    // }
-    // return res.status(200).json({ message: `Authentication successful` });
-     bcrypt.compare(req.body.password, user.password, (err, result) => {
-      if (err) {
+      // const comparePass = bcrypt.compareSync(req.body.password, user.password);
+      // if (!comparePass) {
+      //   return res.status(401).json({ message: `Authentication failed` });
+      // }
+      // return res.status(200).json({ message: `Authentication successful` });
+      bcrypt.compare(req.body.password, user.password, (err, result) => {
+        if (err) {
+          return res.status(401).json({
+            message: `Authentication failed`,
+          });
+        } else if (result) {
+          const token = jwt.sign(
+            {
+              email: user.email,
+              userId: user._id,
+            },
+            process.env.JWT_KEY,
+            {
+              expiresIn: "1h",
+            }
+          );
+          return res.status(200).json({
+            message: `Authentication successful`,
+            token: token,
+          });
+        }
         return res.status(401).json({
-          message: `Authentication failed`,
+          message: `Username or password incorrect`,
         });
-      } else if (result) {
-        const token = jwt.sign(
-          {
-            email: user.email,
-            userId: user._id,
-          },
-          process.env.JWT_KEY,
-          {
-            expiresIn: "1h",
-          }
-        );
-        return res.status(200).json({
-          message: `Authentication successful`,
-          token: token,
-        });
-      }
-    });
+      });
   } catch (err) {
     res.send("error");
     console.log(err);
@@ -99,6 +124,16 @@ exports.deleteUser = async (req, res) => {
       }
     });
   } catch (err) {
+    res.send("error");
+  }
+};
+// Fetching users
+exports.getUsers = async (req, res) => {
+  try {
+    const users = await Orders.find();
+    res.json(users);
+  } catch (err) {
+    console.log(err);
     res.send("error");
   }
 };

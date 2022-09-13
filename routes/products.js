@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { postProduct,getProducts,patchProduct,getProduct,deleteAllProducts,} = require("../controllers/pro_ord.con");
+const { postProduct,getProducts,patchProduct,getProduct,deleteAllProducts,} = require("../controllers/productcon");
 const auth = require("../Authorization/auth");
-const { upload }= require("../controllers/pro_ord.con")
+const { upload }= require("../controllers/uploads");
 
 
 router.post("/", auth, upload.single("productImage"), postProduct);

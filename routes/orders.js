@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getOrders, getOrder, deleteAllOrders} = require("../controllers/pro_ord.con");
+const { getOrders, getOrder, deleteAllOrders} = require("../controllers/ordercon");
 const auth = require("../Authorization/auth")
 
 router.get('/', auth,getOrders);

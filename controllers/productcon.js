@@ -1,47 +1,20 @@
 const Products = require("../models/products");
 const Orders = require("../models/orders");
-const multer = require("multer");
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, "./uploads/");
-    },
-  
-    filename: function (req, file, cb) {
-      cb(null, `${new Date().toDateString()} ${file.originalname}`);
-    },
-  });
-const fileFilter = (req, file, cb) => {
-    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-      cb(null, true);
-    } else {
-      cb(new Error('Make sure the image file extension is jpeg or jpg'), false);
-    }
-  };
-exports.upload = multer({
-    storage: storage,
-    limits: {
-      fileSize: 1024 * 1024 * 5,
-    },
-    fileFilter: fileFilter
-  });
+const { isValidate } = require("../Validation/validateInput");
 
-// const isValidate = require("../validateInput");
-
-// const validate = require("../validate");
-
-// creating a product
+// CREATING A PRODUCT
 exports.postProduct = async (req, res) => {
   try {
-    console.log(req.file);
-    // var requiredFields = ["quantity", "title", "price", "color", "productImage"];
-    // var product = req.body;
-
-    // if (isValidate(product, requiredFields) === true) {
+    console.log(req.body);
+    var requiredFields = ["quantity", "title", "price", "color"];
+    var product = req.body;
+// Checks whether all required fields were filled before moving on
+    if (isValidate(product, requiredFields) === true) {
       const order = new Orders({
         quantity: req.body.quantity,
         createdAt: req.body.createdAt,
       });
-
+// Saving a product 
       const product = new Products({
         productImage: req.file.path,
         title: req.body.title,
@@ -53,33 +26,34 @@ exports.postProduct = async (req, res) => {
       await order.save();
       const p = await product.save();
       res.json(p);
-    // } else {
-    //   res.status(200).json({
-    //     message: "Fill out required fields only",
-    //   });
-    // }
+    } else {
+      res.status(200).json({
+        message: "Fill out required fields",
+      });
+    }
   } catch (err) {
     console.log(err);
   }
 };
 
-// Fetch all products
+// FETCHES ALL PRODUCTS
 exports.getProducts = async (req, res) => {
   try {
+    // Finds all products saved
     const products = await Products.find().exec();
-
+// If there are no products it returns an empty array
     if (!products.length) return res.json([]);
-
+// Maps each product found
     const mappedProducts = products.map(async (product) => {
       let order = {
         quantity: 0,
         createdAt: null,
       };
-
+// If the product has an order it gets the order throught it's Id 
       if (product.order) {
         order = await Orders.findOne({ _id: product.order });
       }
-
+// Projects data to be returned
       return {
         productImage: product.productImage,
         Title: product.title,
@@ -102,7 +76,7 @@ exports.getProducts = async (req, res) => {
   }
 };
 
-// Fetch one product
+// FETCH ONE PRODUCT
 exports.getProduct = async (req, res) => {
   try {
     const product = await Products.findById(req.params.id);
@@ -117,33 +91,7 @@ exports.getProduct = async (req, res) => {
   }
 };
 
-// Fetch orders
-exports.getOrders = async (req, res) => {
-  try {
-    const order = await Orders.find();
-    res.json(order);
-  } catch (err) {
-    console.log(err);
-    res.send("error");
-  }
-};
-
-// Fetch one order
-exports.getOrder = async (req, res) => {
-  try {
-    const Order = await Orders.findById(req.params.order);
-    console.log(Order);
-    if (!Order) {
-      return res.send({ msg: "Order not found" });
-    } else {
-      return res.json(Order);
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-// update a product
+// UPDATE A PRODUCT
 exports.patchProduct = async (req, res) => {
   try {
     if (Object.keys(req.body).length === 0) {
@@ -163,7 +111,8 @@ exports.patchProduct = async (req, res) => {
     res.send("error");
   }
 };
-// Delete all products
+
+// DELETES ALL PRODUCTS
 exports.deleteAllProducts = async (req, res) => {
   try {
     await Products.deleteMany({}).then((data) => {
@@ -180,18 +129,5 @@ exports.deleteAllProducts = async (req, res) => {
   }
 };
 
-//   Delete all orders
-exports.deleteAllOrders = async (req, res) => {
-  try {
-    await Orders.deleteMany({}).then((data) => {
-      res.send({
-        message: `${data.deletedCount} Orders were deleted successfully!`,
-      });
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(400).send({
-      message: err.message || "Some error occurred while removing all Orders.",
-    });
-  }
-};
+
+

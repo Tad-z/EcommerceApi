@@ -1,4 +1,4 @@
-exports.isValidate = (products, requiredFields) => {
+exports.ValidateFields = (products, requiredFields) => {
   let flag = true;
   if (JSON.stringify(requiredFields) == JSON.stringify(Object.keys(products))) {
     flag = true;

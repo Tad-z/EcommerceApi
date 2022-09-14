@@ -1,20 +1,19 @@
-const Products = require("../models/products");
-const Orders = require("../models/orders");
 const { isValidate } = require("../Validation/validateInput");
+const Orders = require("../models/orders");
+const Products = require("../models/products");
 
-// CREATING A PRODUCT
 exports.postProduct = async (req, res) => {
   try {
     console.log(req.body);
     var requiredFields = ["quantity", "title", "price", "color"];
     var product = req.body;
-// Checks whether all required fields were filled before moving on
-    if (isValidate(product, requiredFields) === true) {
+    // Checks whether all required fields were filled before moving on
+    if (ValidateFields(product, requiredFields) === true) {
       const order = new Orders({
         quantity: req.body.quantity,
         createdAt: req.body.createdAt,
       });
-// Saving a product 
+      // Saving a product
       const product = new Products({
         productImage: req.file.path,
         title: req.body.title,
@@ -36,24 +35,23 @@ exports.postProduct = async (req, res) => {
   }
 };
 
-// FETCHES ALL PRODUCTS
 exports.getProducts = async (req, res) => {
   try {
     // Finds all products saved
     const products = await Products.find().exec();
-// If there are no products it returns an empty array
+    // If there are no products it returns an empty array
     if (!products.length) return res.json([]);
-// Maps each product found
+    // Maps each product found
     const mappedProducts = products.map(async (product) => {
       let order = {
         quantity: 0,
         createdAt: null,
       };
-// If the product has an order it gets the order throught it's Id 
+      // If the product has an order it gets the order throught it's Id
       if (product.order) {
         order = await Orders.findOne({ _id: product.order });
       }
-// Projects data to be returned
+      // Projects data to be returned
       return {
         productImage: product.productImage,
         Title: product.title,
@@ -76,7 +74,6 @@ exports.getProducts = async (req, res) => {
   }
 };
 
-// FETCH ONE PRODUCT
 exports.getProduct = async (req, res) => {
   try {
     const product = await Products.findById(req.params.id);
@@ -91,43 +88,38 @@ exports.getProduct = async (req, res) => {
   }
 };
 
-// UPDATE A PRODUCT
 exports.patchProduct = async (req, res) => {
   try {
     if (Object.keys(req.body).length === 0) {
-      return res.status(400).send({
+      return res.status(400).json({
         message: "Data to update can not be empty!",
       });
     }
     const id = req.params.id;
     await Products.findByIdAndUpdate(id, req.body).then((data) => {
       if (!data) {
-        res.send({
+        res.json({
           message: `Cannot update Product with id=${id}. Maybe Product was not found!`,
         });
-      } else res.send({ message: "Product was updated successfully." });
+      } else res.json({ message: "Product was updated successfully." });
     });
   } catch (err) {
-    res.send("error");
+    res.json("error");
   }
 };
 
-// DELETES ALL PRODUCTS
 exports.deleteAllProducts = async (req, res) => {
   try {
     await Products.deleteMany({}).then((data) => {
-      res.send({
+      res.json({
         message: `${data.deletedCount} Products were deleted successfully!`,
       });
     });
   } catch (err) {
     console.log(err);
-    res.status(400).send({
+    res.status(400).json({
       message:
         err.message || "Some error occurred while removing all Products.",
     });
   }
 };
-
-
-

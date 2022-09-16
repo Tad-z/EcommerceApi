@@ -1,3 +1,3 @@
 # EcommerceApi
-A basic Ecommerce API that performs CRUD operations on products and orders. I used referencing for the schema design
+Ecommerce API made with node js
 It also has user sign up and login with authentication and authorization

@@ -1,35 +1,18 @@
-const { isValidate } = require("../Validation/validateInput");
-const Orders = require("../models/orders");
 const Products = require("../models/products");
 
 exports.postProduct = async (req, res) => {
   try {
     console.log(req.body);
-    var requiredFields = ["quantity", "title", "price", "color"];
-    var product = req.body;
-    // Checks whether all required fields were filled before moving on
-    if (ValidateFields(product, requiredFields) === true) {
-      const order = new Orders({
-        quantity: req.body.quantity,
-        createdAt: req.body.createdAt,
-      });
-      // Saving a product
-      const product = new Products({
-        productImage: req.file.path,
-        title: req.body.title,
-        price: req.body.price,
-        color: req.body.color,
-        order: order._id,
-        createdat: req.body.createdAt,
-      });
-      await order.save();
-      const p = await product.save();
-      res.json(p);
-    } else {
-      res.status(200).json({
-        message: "Fill out required fields",
-      });
-    }
+    // Saving a product
+    const product = new Products({
+      productImage: req.file.path,
+      title: req.body.title,
+      price: req.body.price,
+      color: req.body.color,
+      createdat: req.body.createdAt,
+    });
+    const p = await product.save();
+    res.json(p);
   } catch (err) {
     console.log(err);
   }
@@ -42,33 +25,14 @@ exports.getProducts = async (req, res) => {
     // If there are no products it returns an empty array
     if (!products.length) return res.json([]);
     // Maps each product found
-    const mappedProducts = products.map(async (product) => {
-      let order = {
-        quantity: 0,
-        createdAt: null,
-      };
-      // If the product has an order it gets the order throught it's Id
-      if (product.order) {
-        order = await Orders.findOne({ _id: product.order });
-      }
-      // Projects data to be returned
-      return {
-        productImage: product.productImage,
-        Title: product.title,
-        productId: product._id,
-        price: product.price,
-        color: product.color,
-        order,
-        createdAt: product.createdAt,
-      };
-    });
 
-    const data = await Promise.all(mappedProducts);
+    // Projects data to be returned
     res.status(200).json({
       message: "Products retrieved successfully",
       count: products.length,
-      data,
+      products
     });
+
   } catch (err) {
     console.log(err);
   }
@@ -123,3 +87,4 @@ exports.deleteAllProducts = async (req, res) => {
     });
   }
 };
+

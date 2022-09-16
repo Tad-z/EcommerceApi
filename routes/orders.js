@@ -1,10 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { getOrders, getOrder, deleteAllOrders} = require("../controllers/order.controller");
+const { postOrders, getOrders, getOrder, deleteAllOrders, deleteOrder} = require("../controllers/cart.controller");
 const auth = require("../Authorization/auth")
 
-router.get('/', auth,getOrders);
+router.post('/', auth, postOrders);
+router.get('/', auth, getOrders);
 router.get('/:order',auth, getOrder);
 router.delete('/', auth, deleteAllOrders);
+router.delete('/:id', auth, deleteOrder);
 
 module.exports = router;

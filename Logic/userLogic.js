@@ -4,9 +4,9 @@ const jwt = require("jsonwebtoken");
 
 exports.signUp = async (req, res) => {
   const user = req.body;
-  if (user.username.length < 6 || user.username.length > 15) {
+  if (user.username.length < 4 || user.username.length > 15) {
     res.status(400).json({
-      message: "Username length should be between 6-15 characters long",
+      message: "Username length should be between 4-15 characters long",
     });
     return;
   } else if (user.password.length < 6 || user.password.length > 15) {
@@ -49,7 +49,7 @@ exports.signUp = async (req, res) => {
       });
     }
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
     res.send("error");
   }
 };
@@ -67,8 +67,8 @@ exports.logIn = async (req, res) => {
         //   return res.status(401).json({ message: `Authentication failed` });
         // }
         // return res.status(200).json({ message: `Authentication successful` });
-        bcrypt.compare(req.body.password, user.password, (err, result) => {
-          if (err) {
+        const result = await bcrypt.compare(req.body.password, user.password)
+          if (!result) {
             return res.status(401).json({
               message: `Authentication failed`,
             });
@@ -91,10 +91,9 @@ exports.logIn = async (req, res) => {
           return res.status(401).json({
             message: `Username or password incorrect`,
           });
-        });
     } catch (err) {
       res.json("error");
-      console.log(err);
+      console.log(err.message);
     }
   };
 
@@ -113,6 +112,7 @@ exports.logIn = async (req, res) => {
         }
       });
     } catch (err) {
+      console.log(err.message);
       res.json("error");
     }
   };
@@ -126,7 +126,7 @@ exports.logIn = async (req, res) => {
         users,
       });
     } catch (err) {
-      console.log(err);
+      console.log(err.message);
       res.json("error");
     }
   }

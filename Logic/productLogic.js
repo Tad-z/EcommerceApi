@@ -14,7 +14,7 @@ exports.postProduct = async (req, res) => {
     const p = await product.save();
     res.json(p);
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
   }
 };
 
@@ -34,7 +34,7 @@ exports.getProducts = async (req, res) => {
     });
 
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
   }
 };
 
@@ -48,7 +48,7 @@ exports.getProduct = async (req, res) => {
       return res.json(product);
     }
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
   }
 };
 
@@ -68,6 +68,7 @@ exports.patchProduct = async (req, res) => {
       } else res.json({ message: "Product was updated successfully." });
     });
   } catch (err) {
+    console.log(err.message);
     res.json("error");
   }
 };
@@ -80,7 +81,7 @@ exports.deleteAllProducts = async (req, res) => {
       });
     });
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
     res.status(400).json({
       message:
         err.message || "Some error occurred while removing all Products.",

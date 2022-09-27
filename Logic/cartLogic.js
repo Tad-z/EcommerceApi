@@ -1,22 +1,22 @@
 const { ValidateFields } = require("../Validation/validateInput");
-const Orders = require("../models/orders");
+const Cart = require("../models/cart");
 const Products = require("../models/products");
 
 
-exports.postOrderstoCart = async (req, res) => {
+exports.postProducttoCart = async (req, res) => {
   try {
-    var order = req.body;
-    const product = await Products.findOne({ _id: order.productId }).exec();
+    var cart = req.body;
+    const product = await Products.findOne({ _id: cart.productId }).exec();
     if (product) {
       var requiredFields = ["productId", "quantity"];
-      if (ValidateFields(order, requiredFields) === true) {
-        const order = new Orders({
+      if (ValidateFields(cart, requiredFields) === true) {
+        const cart = new Cart({
           productId: req.body.productId,
           quantity: req.body.quantity,
           createdAt: req.body.createdAt,
         });
-        const or = await order.save();
-        res.status(200).json(or)
+        const or = await cart.save();
+        res.status(200).json(or);
       } else {
         res.status(200).json({
           message: "Fill out required fields",
@@ -27,87 +27,87 @@ exports.postOrderstoCart = async (req, res) => {
         message: "Product not found",
       });
     }
-
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
   }
 }
-exports.getOrdersfromCart = async (req, res) => {
+exports.getProductsfromCart = async (req, res) => {
   try {
-    const orders = await Orders.find().exec();
-    if (!orders.length) return res.json([]);
-    const mappedOrders = orders.map(async (order) => {
+    const cart = await Cart.find({ userId: req.userData.userId }).exec();
+    if (!cart.length) return res.json([]);
+    const mappedProducts = cart.map(async (cart) => {
       let product = {
         title: null,
         price: 0,
         color: null,
       };
-      if (order.productId) {
-        product = await Products.findOne({ _id: order.productId }, { title: 1, price: 1, color: 1, _id: 0 });
+      if (cart.productId) {
+        product = await Products.findOne({ _id: cart.productId }, { title: 1, price: 1, color: 1, _id: 0 });
       }
       return {
-        OrderId: order._id,
-        quantity: order.quantity,
-        createdAt: order.createdAt,
+        CartId: cart._id,
+        quantity: cart.quantity,
+        createdAt: cart.createdAt,
         product,
       };
     });
-    const data = await Promise.all(mappedOrders);
+    const data = await Promise.all(mappedProducts);
     res.status(200).json({
-      message: "Orders retrieved successfully",
-      count: orders.length,
+      message: "Products retrieved successfully",
+      count: cart.length,
       data,
     });
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
     res.send("error");
   }
 };
 
-exports.getOrderfromCart = async (req, res) => {
+exports.getProductfromCart = async (req, res) => {
   try {
-    const Order = await Orders.findById(req.params.order);
-    if (!Order) {
-      return res.json({ msg: "Order not found" });
+    const Product = await Cart.findById(req.params.id);
+    if (!Product) {
+      return res.json({ msg: "Product not found" });
     } else {
-      return res.json(Order);
+      return res.json(Product);
     }
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
   }
 };
 
-exports.deleteAllOrdersfromCart = async (req, res) => {
+exports.deleteAllProductsfromCart = async (req, res) => {
   try {
-    await Orders.deleteMany({}).then((data) => {
+    await Cart.deleteMany({}).then((data) => {
       res.json({
-        message: `${data.deletedCount} Orders were deleted successfully!`,
+        message: `${data.deletedCount} Products were deleted successfully!`,
       });
     });
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
     res.status(400).json({
-      message: err.message || "Some error occurred while removing all Orders.",
+      message: err.message || "Some error occurred while removing all products.",
     });
   }
 };
 
-exports.deleteOrderfromCart = async (req, res) => {
+exports.deleteProductfromCart = async (req, res) => {
   try {
     const id = req.params.id;
-    await Orders.findByIdAndRemove(id)
+    await Cart.findByIdAndRemove(id)
       .then(data => {
         if (!data) {
           res.status(404).send({
-            message: `Cannot delete Order with id=${id}. Maybe Diary was not found!`
+            message: `Cannot delete Product with id=${id}. Maybe Product was not found!`
           });
         } else {
           res.send({
-            message: "Order was deleted successfully!"
+            message: "Product was deleted successfully!"
           });
         }
       })
   } catch (err) {
-    res.send('error')
+    console.log(err.message);
+    res.send('error');
   }
 }

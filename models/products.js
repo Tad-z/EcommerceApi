@@ -23,10 +23,10 @@ const productsSchema = new mongoose.Schema({
         format: "date-time",
         default: Date.now()
     },
-    order: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Orders'
-    }
+    // order: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Orders'
+    // }
 });
 
 

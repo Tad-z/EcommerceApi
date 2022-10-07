@@ -2,13 +2,13 @@ const Products = require("../models/products");
 
 exports.postProduct = async (req, res) => {
   try {
-    console.log(req.body);
     // Saving a product
     const product = new Products({
       productImage: req.file.path,
       title: req.body.title,
       price: req.body.price,
       color: req.body.color,
+      slug: req.body.slug,
       createdat: req.body.createdAt,
     });
     const p = await product.save();
@@ -25,12 +25,13 @@ exports.getProducts = async (req, res) => {
     // If there are no products it returns an empty array
     if (!products.length) return res.json([]);
     // Maps each product found
-
+    const result = await res.paginatedResults
     // Projects data to be returned
     res.status(200).json({
       message: "Products retrieved successfully",
-      count: products.length,
-      products
+      // count: products.length,
+      products,
+      result
     });
 
   } catch (err) {

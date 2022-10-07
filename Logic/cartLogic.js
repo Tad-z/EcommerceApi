@@ -1,4 +1,4 @@
-const { ValidateFields } = require("../Validation/validateInput");
+const { ValidateFields, ValidateInput } = require("../Validation/validateInput");
 const Cart = require("../models/cart");
 const Products = require("../models/products");
 
@@ -9,7 +9,7 @@ exports.postProducttoCart = async (req, res) => {
     const product = await Products.findOne({ _id: cart.productId }).exec();
     if (product) {
       var requiredFields = ["productId", "quantity"];
-      if (ValidateFields(cart, requiredFields) === true) {
+      if (ValidateInput(cart, requiredFields) === true) {
         const cart = new Cart({
           productId: req.body.productId,
           quantity: req.body.quantity,
@@ -34,15 +34,18 @@ exports.postProducttoCart = async (req, res) => {
 exports.getProductsfromCart = async (req, res) => {
   try {
     const cart = await Cart.find({ userId: req.userData.userId }).exec();
+    // const cart = await Cart.find().exec()
     if (!cart.length) return res.json([]);
     const mappedProducts = cart.map(async (cart) => {
       let product = {
         title: null,
         price: 0,
         color: null,
+        slug: null,
       };
       if (cart.productId) {
-        product = await Products.findOne({ _id: cart.productId }, { title: 1, price: 1, color: 1, _id: 0 });
+        product = await Products.findOne({ _id: cart.productId }, { title: 1,slug: 1,
+           price: 1, productImage: 1, color: 1, _id: 0 });
       }
       return {
         CartId: cart._id,
@@ -76,17 +79,39 @@ exports.getProductfromCart = async (req, res) => {
   }
 };
 
+exports.patchQuantity = async (req, res) => {
+  try {
+    if (Object.keys(req.body).length === 0) {
+      return res.status(400).json({
+        message: "Data to update can not be empty!",
+      });
+    }
+    const id = req.params.id;
+    await Cart.findByIdAndUpdate(id, req.body).then((data) => {
+      if (!data) {
+        res.json({
+          message: `Cannot update Product with id=${id}. Maybe Product was not found!`,
+        });
+      } else res.json({ message: "Product was updated successfully." });
+    });
+  } catch (err) {
+    console.log(err.message);
+    res.json("error");
+  }
+};
+
+
 exports.deleteAllProductsfromCart = async (req, res) => {
   try {
     await Cart.deleteMany({}).then((data) => {
       res.json({
-        message: `${data.deletedCount} Products were deleted successfully!`,
+        message: `${data.deletedCount} Products were deleted from cart successfully!`,
       });
     });
   } catch (err) {
     console.log(err.message);
     res.status(400).json({
-      message: err.message || "Some error occurred while removing all products.",
+      message: err.message || "Some error occurred while removing all products from cart.",
     });
   }
 };
@@ -98,7 +123,7 @@ exports.deleteProductfromCart = async (req, res) => {
       .then(data => {
         if (!data) {
           res.status(404).send({
-            message: `Cannot delete Product with id=${id}. Maybe Product was not found!`
+            message: `Cannot delete Product with id=${id} from. Maybe Product was not found!`
           });
         } else {
           res.send({

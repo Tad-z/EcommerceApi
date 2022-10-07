@@ -18,6 +18,10 @@ const productsSchema = new mongoose.Schema({
         required: true
         
     },
+    slug: {
+        type: String,
+        required: true,
+    },
     createdAt: {
         type: Date,
         format: "date-time",

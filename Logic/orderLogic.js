@@ -5,7 +5,7 @@ const Product = require("../models/products")
 
 exports.postOrder = async (req, res) => {
     const user = req.userData;
-
+    console.log(user);
     try {
         const order = new Order({
             adress: req.body.adress,

@@ -1,14 +1,17 @@
 const express = require("express");
 const router = express.Router();
 const { postProduct,getProducts,patchProduct,getProduct,deleteAllProducts,} = require("../controllers/product.controller");
-const auth = require("../Authorization/auth");
+// const auth = require("../Authorization/auth");
+const Products = require("../models/products")
 const { upload }= require("../controllers/uploads");
+const paginatedResults = require("../Pagination/paginatedResults");
 
 
-router.post("/", auth, upload.single("productImage"), postProduct);
+router.post("/", upload.single("productImage"), postProduct);
+router.get("/page",paginatedResults(Products), getProducts);
 router.get("/", getProducts);
 router.get("/:id", getProduct);
-router.patch("/:id", auth, patchProduct);
-router.delete("/", auth, deleteAllProducts); 
+router.patch("/:id",  patchProduct);
+router.delete("/", deleteAllProducts); 
 
 module.exports = router;

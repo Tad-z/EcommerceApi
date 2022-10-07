@@ -6,6 +6,6 @@ const { getOrders, clearOrders } = require("../Logic/orderLogic");
 
 router.post('/',auth, postOrder);
 router.get('/', auth, getOrders);
-router.delete('/', clearOrders);
+router.delete('/',auth, clearOrders);
 
 module.exports = router;

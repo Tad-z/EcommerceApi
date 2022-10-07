@@ -1,5 +1,5 @@
 const { postProducttoCart, getProductsfromCart, getProductfromCart } = require("../Logic/cartLogic");
-const { deleteAllProductsfromCart, deleteProductfromCart } = require("../Logic/cartLogic");
+const { deleteAllProductsfromCart, deleteProductfromCart, patchQuantity } = require("../Logic/cartLogic");
 // Create an order
 exports.postProduct = async (req, res) => {
   await postProducttoCart(req, res);
@@ -14,6 +14,9 @@ exports.getProducts = async (req, res) => {
 exports.getProduct = async (req, res) => {
   await getProductfromCart(req, res);
 };
+exports.patchQuantity = async(req, res) => {
+  await patchQuantity(req,res);
+}
 
 //   Delete all orders
 exports.deleteAllProducts = async (req, res) => {

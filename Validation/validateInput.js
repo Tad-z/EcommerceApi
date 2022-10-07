@@ -9,6 +9,17 @@ exports.ValidateFields = (products, requiredFields) => {
 
   return flag;
 };
+exports.ValidateInput = (inputs, requiredFields) => {
+  let flag = false;
+  const require = requiredFields.filter((fields) => fields.toLowerCase().includes(inputs))
+  if (require) {
+    flag = true
+  } else {
+    flag = false;
+    return flag
+  }
+  return flag
+}
 
 exports.validateEmail = (email) => {
   const regex = new RegExp(

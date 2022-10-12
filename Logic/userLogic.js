@@ -85,15 +85,16 @@ exports.logIn = async (req, res) => {
         }
       );
 
-      console.log(token);
-      res.cookie('token', token, {
-        httpOnly: true,
-        secure: false,
-        maxAge: 3600,
-      })
+      // console.log(token);
+      // res.cookie('token', token, {
+      //   httpOnly: true,
+      //   secure: false,
+      //   maxAge: 3600,
+      // })
 
       return res.status(200).json({
         message: `Authentication successful`,
+        token: token
       });
     }
     return res.status(401).json({
@@ -108,12 +109,6 @@ exports.logIn = async (req, res) => {
 exports.user = async (req, res) => {
   console.log(req.cookies)
   res.send(req.cookies);
-  // const cookie = req.cookies['jwt']
-  // const token = req.headers.authorization.split(" ")[1];
-  // const decoded = jwt.verify(req.cookies.jwt, process.env.JWT_KEY) 
-
-  // if(!decoded) {
-  //   return res.status(401).json({
   //     message: "Unauthorized access"
   // });
   // }

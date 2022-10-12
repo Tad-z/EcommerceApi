@@ -4,7 +4,7 @@ const { postProduct, getProducts, getProduct, deleteAllProducts, deleteProduct} 
 const auth = require("../Authorization/auth");
 const { patchQuantity } = require("../Logic/cartLogic");
 
-router.post('/', postProduct);
+router.post('/', auth, postProduct);
 router.get('/',auth, getProducts);
 router.get('/:id', getProduct);
 router.patch('/:id', patchQuantity);

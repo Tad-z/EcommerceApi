@@ -6,12 +6,14 @@ const Product = require("../models/products")
 exports.postOrder = async (req, res) => {
     const user = req.userData;
     console.log(user);
+    console.log(req.body)
     try {
         const order = new Order({
+            fullname: req.body.fullname,
+            city: req.body.city,
             adress: req.body.adress,
             userId: user.userId,
-            cartId: req.body.cartId,
-            hasPaid: true,
+            cart: req.body.data,
             createdAt: new Date()
         })
         const result = await order.save()
@@ -32,27 +34,16 @@ exports.getOrders = async (req, res) => {
                 username: null,
                 email: null
             };
-            let product = {
-                productImage: null,
-                title: null,
-                price: 0,
-                color: null,
-            };
 
             if (order.userId) {
                 user = await User.findOne({ _id: order.userId }, { password: 0, __v: 0, _id: 0 })
-            }
-
-            if (order.cartId) {
-                const cart = await Cart.findOne({ _id: order.cartId })
-                product = await Product.findOne({ _id: cart.productId }, { _id: 0, __v: 0 })
             }
             return {
                 adress: order.adress,
                 hasPaid: order.hasPaid,
                 createdAt: order.createdAt,
                 user,
-                product,
+                cart: order.cart,
             };
         });
         const data = await Promise.all(mappedOrders);

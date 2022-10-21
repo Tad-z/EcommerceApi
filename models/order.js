@@ -1,22 +1,25 @@
+const { Timestamp } = require('mongodb');
 const mongoose = require('mongoose')
+const Cart = require("../models/cart");
 
 const orderSchema = new mongoose.Schema({
-    cartId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Cart',    
-    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
+    fullname: {
+        type: String,
+        required: true,
+    }, 
+    city: {
+        type: String,
+        required: true,
+    }, 
     adress: {
         type: String,
         required: true,
     }, 
-    hasPaid: {
-        type: Boolean,
-        default: false,
-    },
+    cart: [],
     createdAt: {
         type: Date,
         default: Date.now()

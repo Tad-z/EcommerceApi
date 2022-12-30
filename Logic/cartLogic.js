@@ -54,11 +54,11 @@ exports.getProductsfromCart = async (req, res) => {
         product,
       };
     });
-    const data = await Promise.all(mappedProducts);
+    const cartItems = await Promise.all(mappedProducts);
     res.status(200).json({
       message: "Products retrieved successfully",
       count: cart.length,
-      data,
+      cartItems,
     });
   } catch (err) {
     console.log(err.message);
@@ -104,7 +104,7 @@ exports.patchQuantity = async (req, res) => {
 exports.deleteAllProductsfromCart = async (req, res) => {
   try {
     await Cart.deleteMany({}).then((data) => {
-      res.json({
+      res.status(204).json({
         message: `${data.deletedCount} Products were deleted from cart successfully!`,
       });
     });
@@ -126,7 +126,7 @@ exports.deleteProductfromCart = async (req, res) => {
             message: `Cannot delete Product with id=${id} from. Maybe Product was not found!`
           });
         } else {
-          res.send({
+          res.status(204).json({
             message: "Product was deleted successfully!"
           });
         }

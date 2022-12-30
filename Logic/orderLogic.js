@@ -5,14 +5,12 @@ const Product = require("../models/products")
 
 exports.postOrder = async (req, res) => {
     const user = req.userData;
-    console.log(user);
-    console.log(req.body)
     try {
         const order = new Order({
             fullname: req.body.fullname,
             city: req.body.city,
             adress: req.body.adress,
-            userId: user.userId,
+            userId: user.userId, 
             cart: req.body.data,
             createdAt: new Date()
         })
@@ -39,8 +37,9 @@ exports.getOrders = async (req, res) => {
                 user = await User.findOne({ _id: order.userId }, { password: 0, __v: 0, _id: 0 })
             }
             return {
+                fullname: order.fullname,
+                city: order.city,
                 adress: order.adress,
-                hasPaid: order.hasPaid,
                 createdAt: order.createdAt,
                 user,
                 cart: order.cart,

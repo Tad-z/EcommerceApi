@@ -17,7 +17,7 @@ exports.signUp = async (req, res) => {
     return;
   }
   try {
-    const user = User.find({ username: req.body.username }).exec();
+    const user = User.find({ username: req.body.username.toLowerCase() }).exec();
     if ((await user).length >= 1) {
       return res.status(409).json({
         message: `username exists already use a different username`,
@@ -63,11 +63,6 @@ exports.logIn = async (req, res) => {
         message: `username or password is incorrect`,
       });
     }
-    // const comparePass = bcrypt.compareSync(req.body.password, user.password);
-    // if (!comparePass) {
-    //   return res.status(401).json({ message: `Authentication failed` });
-    // }
-    // return res.status(200).json({ message: `Authentication successful` });
     const result = await bcrypt.compare(req.body.password, user.password)
     if (!result) {
       return res.status(401).json({
@@ -84,14 +79,6 @@ exports.logIn = async (req, res) => {
           expiresIn: "1h",
         }
       );
-
-      // console.log(token);
-      // res.cookie('token', token, {
-      //   httpOnly: true,
-      //   secure: false,
-      //   maxAge: 3600,
-      // })
-
       return res.status(200).json({
         message: `Authentication successful`,
         token: token
@@ -105,18 +92,6 @@ exports.logIn = async (req, res) => {
     console.log(err.message);
   }
 };
-
-exports.user = async (req, res) => {
-  console.log(req.cookies)
-  res.send(req.cookies);
-  //     message: "Unauthorized access"
-  // });
-  // }
-  // const user = await User.findOne({_id: decoded.userId})
-
-  // res.send(decoded)
-
-}
 
 
 exports.deleteUser = async (req, res) => {

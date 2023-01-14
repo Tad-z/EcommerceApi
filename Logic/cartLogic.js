@@ -12,6 +12,7 @@ exports.postProducttoCart = async (req, res) => {
       if (ValidateInput(cart, requiredFields) === true) {
         const cart = new Cart({
           productId: req.body.productId,
+          userId: req.userData.userId,
           quantity: req.body.quantity,
           createdAt: req.body.createdAt,
         });
@@ -34,7 +35,7 @@ exports.postProducttoCart = async (req, res) => {
 exports.getProductsfromCart = async (req, res) => {
   try {
     const cart = await Cart.find({ userId: req.userData.userId }).exec();
-    // const cart = await Cart.find().exec()
+    console.log(req.userData);
     if (!cart.length) return res.json([]);
     const mappedProducts = cart.map(async (cart) => {
       let product = {
@@ -49,6 +50,7 @@ exports.getProductsfromCart = async (req, res) => {
       }
       return {
         CartId: cart._id,
+        userId: cart.userId,
         quantity: cart.quantity,
         createdAt: cart.createdAt,
         product,

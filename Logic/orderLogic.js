@@ -5,6 +5,7 @@ const Product = require("../models/products")
 
 exports.postOrder = async (req, res) => {
     const user = req.userData;
+    console.log(req.body);
     try {
         const order = new Order({
             fullname: req.body.fullname,
@@ -50,7 +51,7 @@ exports.getOrders = async (req, res) => {
             message: "Orders retrieved successfully",
             count: orders.length,
             data,
-        });
+        })
     } catch (err) {
         console.log(err.message);
         res.send("error");

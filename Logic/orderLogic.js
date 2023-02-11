@@ -46,11 +46,11 @@ exports.getOrders = async (req, res) => {
                 cart: order.cart,
             };
         });
-        const data = await Promise.all(mappedOrders);
+        const order = await Promise.all(mappedOrders);
         res.status(200).json({
             message: "Orders retrieved successfully",
             count: orders.length,
-            data,
+            order,
         })
     } catch (err) {
         console.log(err.message);

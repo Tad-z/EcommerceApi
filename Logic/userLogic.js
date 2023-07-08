@@ -66,7 +66,7 @@ exports.logIn = async (req, res) => {
     const result = await bcrypt.compare(req.body.password, user.password)
     if (!result) {
       return res.status(401).json({
-        message: `Authentication failed`,
+        message: `Username or password incorrect`,
       });
     } else if (result) {
       const token = jwt.sign(

@@ -5,18 +5,19 @@ const Product = require("../models/products")
 
 exports.postOrder = async (req, res) => {
     const user = req.userData;
-    console.log(req.body);
+    console.log(user);
     try {
         const order = new Order({
             fullname: req.body.fullname,
             city: req.body.city,
             adress: req.body.adress,
-            userId: user.userId, 
-            cart: req.body.data,
-            createdAt: new Date()
+            phoneNumber: req.body.phoneNumber,
+            createdAt: new Date(),
+            userId: user.userId
         })
         const result = await order.save()
         res.status(200).json(result);
+        console.log(result);
     } catch (err) {
         console.log(err.message);
         res.send("erorr")
@@ -30,7 +31,6 @@ exports.getOrders = async (req, res) => {
         if (!orders.length) return res.json([]);
         const mappedOrders = orders.map(async (order) => {
             let user = {
-                username: null,
                 email: null
             };
 
@@ -39,11 +39,11 @@ exports.getOrders = async (req, res) => {
             }
             return {
                 fullname: order.fullname,
+                phoneNumber: order.phoneNumber,
                 city: order.city,
                 adress: order.adress,
                 createdAt: order.createdAt,
                 user,
-                cart: order.cart,
             };
         });
         const order = await Promise.all(mappedOrders);

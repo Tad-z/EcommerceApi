@@ -23,7 +23,6 @@ exports.signUp = async (req, res) => {
         message: `username exists already use a different username`,
       });
     } else {
-      console.log(user);
       bcrypt.hash(req.body.password, 10, async (err, hash) => {
         if (err) {
           console.log(err);
@@ -35,7 +34,6 @@ exports.signUp = async (req, res) => {
           });
           await user.save().then((result) => {
             if (result) {
-              console.log(result);
               res.status(200).json({
                 message: "You have signed up successfully",
               });

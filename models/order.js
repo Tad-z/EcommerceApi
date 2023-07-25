@@ -19,7 +19,10 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true,
     }, 
-    cart: [],
+    phoneNumber: {
+        type: Number,
+        required: true,
+    },
     createdAt: {
         type: Date,
         default: Date.now()

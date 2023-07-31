@@ -55,7 +55,7 @@ exports.signUp = async (req, res) => {
 
 exports.logIn = async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username }).exec();
+    const user = await User.findOne({ username: req.body.username.toLowerCase() }).exec();
     if (!user) {
       return res.status(401).json({
         message: `username or password is incorrect`,

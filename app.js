@@ -20,7 +20,7 @@ main()
 
 app.use(cors({
   credentials: true,
-  origin: ['http://localhost:3000']
+  origin: ['http://localhost:3000', 'https://emax.vercel.app/']
 }))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

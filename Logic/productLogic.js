@@ -21,7 +21,7 @@ exports.postProduct = async (req, res) => {
 exports.getProducts = async (req, res) => {
   try {
     // Finds all products saved
-    // const products = await Products.find().exec();
+    const products = await Products.find().exec();
     // If there are no products it returns an empty array
     if (!products.length) return res.json([]);
     // Maps each product found

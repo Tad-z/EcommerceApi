@@ -32,7 +32,7 @@ exports.getProducts = async (req, res) => {
       message: "Products retrieved successfully",
       count,
       // count: products.length,
-      // products,
+      products,
       result
     });
 

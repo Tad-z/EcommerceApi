@@ -13,6 +13,9 @@ const cors = require("cors")
 main()
   // .then takes a function as an argument
   .then(() => {
+    app.listen(4000, () => {
+      console.log("Server started...");
+    });
     console.log("DB connected");
   })
   .catch(console.error);
@@ -40,6 +43,4 @@ app.use("/cart", cartRouter);
 app.use("/orders", orderRouter);
 app.use("/user", signupRouter);
 
-app.listen(4000, () => {
-  console.log("Server started...");
-});
+

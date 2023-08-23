@@ -43,4 +43,6 @@ app.use("/cart", cartRouter);
 app.use("/orders", orderRouter);
 app.use("/user", signupRouter);
 
+module.exports = app;
+
 

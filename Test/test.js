@@ -162,6 +162,7 @@ describe('Cart API', () => {
                     .send(itemToAdd);
 
                 expect(res).to.have.status(200);
+                expect(res.body).to.be.an('object');
                 // Add more assertions for the response
             } catch (error) {
                 // Handle errors here if needed
@@ -216,6 +217,7 @@ describe('Cart API', () => {
 
                 expect(res).to.have.status(401);
                 expect(res.body).to.have.property('message').eql('Unauthorized access');
+                
                 // Add more assertions for the response
             } catch (error) {
                 // Handle errors here if needed
@@ -233,6 +235,7 @@ describe('Cart API', () => {
 
                 expect(res).to.have.status(200);
                 expect(res.body).to.be.an('object');
+
                 // Add more assertions for the response
             } catch (error) {
                 // Handle errors here if needed
@@ -248,9 +251,9 @@ describe('Cart API', () => {
             }
             try {
                 const res = await chai.request(server)
-                .patch('/cart/64e62126f60caf572b217840')
-                .set('Authorization', `Bearer ${token}`) 
-                .send(newQuantity)
+                    .patch('/cart/64e62126f60caf572b217840')
+                    .set('Authorization', `Bearer ${token}`)
+                    .send(newQuantity)
 
                 expect(res).to.have.status(200);
                 expect(res.body).to.have.property('message').eql("Product was updated successfully.");
@@ -288,8 +291,70 @@ describe('Cart API', () => {
     //         }
     //     })
 
-   
+
 });
+
+
+describe('Order API', () => {
+    describe('POST /order', () => {
+        it('should create an order for a user', async () => {
+            try {
+                const itemsToOrder = {
+                    "fullname": "testuser testname",
+                    "city": "Lagos",
+                    "adress": "4, sholuyi, gbagada",
+                    "phoneNumber": 8022345432,
+                    "createdAt": new Date(),
+                    "userId": "64e60e96c9889401197300f2"
+                };
+                const res = await chai.request(server)
+                    .post('/orders')
+                    .set('Authorization', `Bearer ${token}`)
+                    .send(itemsToOrder)
+
+                expect(res).to.have.status(200);
+                expect(res.body).to.be.an('object');
+
+            } catch (error) {
+                throw error
+            }
+        })
+    }).timeout(20000);
+
+    describe('GET /orders', () => {
+        it('should retrieve all orders of a user', async () => {
+            try {
+                const res = await chai.request(server)
+                    .get('/orders')
+                    .set('Authorization', `Bearer ${token}`)
+
+                expect(res).to.have.status(200);
+                expect(res.body).to.be.an('object');
+                expect(res.body.message).to.equal('Orders retrieved successfully');
+                expect(res.body.count).to.be.a('number');
+                expect(res.body.order).to.be.an('array');
+            } catch (error) {
+                throw error
+            }
+        })
+    }).timeout(20000);
+
+    describe('DELETE /orders', () => {
+        it('should delete all orders of a user', async () => {
+            try {
+                const res = await chai.request(server)
+                    .delete('/orders')
+                    .set('Authorization', `Bearer ${token}`)
+
+                expect(res).to.have.status(200);
+            } catch (error) {
+                throw error
+            }
+        })
+    })
+});
+
+
 
 
 

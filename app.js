@@ -45,7 +45,7 @@ app.use("/cart", cartRouter);
 app.use("/orders", orderRouter);
 app.use("/user", signupRouter);
 
-cron.schedule('*/10 * * * *', async () => {
+cron.schedule('0 */1 * * *', async () => {
   try {
     // Make a GET request to a specific endpoint (e.g., /api/keep-alive)
     const response = await axios.get(`https://emaxapi.onrender.com/products/`)

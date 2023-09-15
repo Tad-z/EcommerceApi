@@ -9,7 +9,7 @@ const main = require("./models/db");
 const productRouter = require("./routes/products");
 const cartRouter = require("./routes/cart");
 const orderRouter = require("./routes/order")
-const signupRouter = require("./routes/userrou");
+const userROuter = require("./routes/userrou");
 const cors = require("cors")
 
 main()
@@ -43,7 +43,7 @@ app.use('/uploads', express.static('uploads'))
 app.use("/products", productRouter);
 app.use("/cart", cartRouter);
 app.use("/orders", orderRouter);
-app.use("/user", signupRouter);
+app.use("/user", userROuter);
 
 cron.schedule('*/14 * * * *', async () => {
   try {

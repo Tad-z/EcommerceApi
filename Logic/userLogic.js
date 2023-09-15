@@ -78,6 +78,7 @@ exports.logIn = async (req, res) => {
         }
       );
       return res.status(200).json({
+        username: user.username,
         message: `Authentication successful`,
         token: token
       });
@@ -140,3 +141,26 @@ exports.getUsers = async (req, res) => {
     res.json("error");
   }
 }
+
+exports.getUser = async (req, res) => {
+  try {
+    let userId = req.userData.userId;
+    console.log(userId);
+    const user = await User.findOne({ _id: userId });
+    if (!user) {
+      return res.status(404).json({
+        message: "User does not exist",
+      });
+    }
+
+    return res.status(200).json({
+      user,
+      message: "Found User",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};

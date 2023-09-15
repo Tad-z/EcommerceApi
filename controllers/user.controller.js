@@ -1,5 +1,5 @@
 const { validateEmail } = require("../Validation/validateInput");
-const { signUp, logIn, user, deleteUser, getUsers, deleteAllUsers } = require("../Logic/userLogic");
+const { signUp, logIn, user, deleteUser, getUsers, deleteAllUsers, getUser } = require("../Logic/userLogic");
 
 exports.signUp = async (req, res) => {
   if (validateEmail(req.body.email) === false) {
@@ -27,4 +27,8 @@ exports.deleteAllUsers = async (req, res) => {
 // Fetching users
 exports.getUsers = async (req, res) => {
   await getUsers(req, res);
+};
+
+exports.getUser = async (req, res) => {
+  await getUser(req, res);
 };

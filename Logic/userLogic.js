@@ -61,6 +61,7 @@ exports.logIn = async (req, res) => {
         message: `username or password is incorrect`,
       });
     }
+    const username = user.username;
     const result = await bcrypt.compare(req.body.password, user.password)
     if (!result) {
       return res.status(401).json({
@@ -78,7 +79,7 @@ exports.logIn = async (req, res) => {
         }
       );
       return res.status(200).json({
-        username: user.username,
+        username: username,
         message: `Authentication successful`,
         token: token
       });

@@ -30,9 +30,9 @@ exports.getProducts = async (req, res) => {
     // Projects data to be returned
     res.status(200).json({
       message: "Products retrieved successfully",
-      count,
+      // count,
       // count: products.length,
-      products,
+      // products,
       result
     });
 

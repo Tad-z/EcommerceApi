@@ -8,7 +8,10 @@ const paginatedResults =  (model) => {
 
         const result = {}
 
-        if (end < await model.countDocuments().exec()) {
+        const totalProducts = await model.countDocuments().exec();
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        if (end < totalProducts) {
             result.next = {
                 page: page + 1,
                 limit: limit
@@ -22,6 +25,7 @@ const paginatedResults =  (model) => {
         }
         try {
             result.products = await model.find().skip(start).limit(limit).exec()
+            result.totalPages = totalPages
             res.paginatedResults = result
             next()
         } catch (err) {

@@ -18,6 +18,29 @@ exports.postProduct = async (req, res) => {
   }
 };
 
+exports.getProductsPaginated = async (req, res) => {
+  try {
+    // Finds all products saved
+    const products = await Products.find().exec();
+    // If there are no products it returns an empty array
+    if (!products.length) return res.json([]);
+    // Maps each product found
+    const count = products.length;
+    const result = await res.paginatedResults
+    // Projects data to be returned
+    res.status(200).json({
+      message: "Products retrieved successfully",
+      // count,
+      // count: products.length,
+      // products,
+      result
+    });
+
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
 exports.getProducts = async (req, res) => {
   try {
     // Finds all products saved
@@ -26,6 +49,7 @@ exports.getProducts = async (req, res) => {
     if (!products.length) return res.json([]);
     // Maps each product found
     const count = products.length;
+    const result = await res.paginatedResults
     // Projects data to be returned
     res.status(200).json({
       message: "Products retrieved successfully",

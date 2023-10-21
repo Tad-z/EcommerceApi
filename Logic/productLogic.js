@@ -26,14 +26,11 @@ exports.getProducts = async (req, res) => {
     if (!products.length) return res.json([]);
     // Maps each product found
     const count = products.length;
-    const result = await res.paginatedResults
     // Projects data to be returned
     res.status(200).json({
       message: "Products retrieved successfully",
-      // count,
-      // count: products.length,
-      // products,
-      result
+      count,
+      products,
     });
 
   } catch (err) {

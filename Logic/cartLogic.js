@@ -1,6 +1,7 @@
 const { ValidateFields, ValidateInput } = require("../Validation/validateInput");
 const Cart = require("../models/cart");
 const Products = require("../models/products");
+const { getCart, mappedProducts } = require("../services/cart.services");
 
 
 exports.postProducttoCart = async (req, res) => {
@@ -8,12 +9,11 @@ exports.postProducttoCart = async (req, res) => {
     var cart = req.body;
     const product = await Products.findOne({ _id: cart.productId }).exec();
     if (product) {
-      var requiredFields = ["productId", "quantity"];
+      var requiredFields = ["productId"];
       if (ValidateInput(cart, requiredFields) === true) {
         const cart = new Cart({
           productId: req.body.productId,
           userId: req.userData.userId,
-          quantity: req.body.quantity,
           createdAt: req.body.createdAt,
         });
         const or = await cart.save();
@@ -34,29 +34,9 @@ exports.postProducttoCart = async (req, res) => {
 }
 exports.getProductsfromCart = async (req, res) => {
   try {
-    const cart = await Cart.find({ userId: req.userData.userId }).exec();
-    console.log(req.userData);
+    const cart = await Cart.find({ userId: req.userData.userId }).exec()
     if (!cart.length) return res.json([]);
-    const mappedProducts = cart.map(async (cart) => {
-      let product = {
-        title: null,
-        price: 0,
-        color: null,
-        slug: null,
-      };
-      if (cart.productId) {
-        product = await Products.findOne({ _id: cart.productId }, { title: 1,slug: 1,
-           price: 1, productImage: 1, color: 1, _id: 0 });
-      }
-      return {
-        CartId: cart._id,
-        userId: cart.userId,
-        quantity: cart.quantity,
-        createdAt: cart.createdAt,
-        product,
-      };
-    });
-    const cartItems = await Promise.all(mappedProducts);
+    const cartItems = await mappedProducts(cart);
     res.status(200).json({
       message: "Products retrieved successfully",
       count: cart.length,

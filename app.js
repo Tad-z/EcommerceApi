@@ -45,15 +45,15 @@ app.use("/cart", cartRouter);
 app.use("/orders", orderRouter);
 app.use("/user", userROuter);
 
-cron.schedule('*/14 * * * *', async () => {
-  try {
-    // Make a GET request to a specific endpoint (e.g., /api/keep-alive)
-    const response = await axios.get(`https://emaxapi.onrender.com/products/`)
-    console.log('Response:', response.data);
-  } catch (error) {
-    console.error('Error:', error.message);
-  } console.error('Keep-alive request error:', error);
-});
+// cron.schedule('*/14 * * * *', async () => {
+//   try {
+//     // Make a GET request to a specific endpoint (e.g., /api/keep-alive)
+//     const response = await axios.get(`https://emaxapi.onrender.com/products/`)
+//     console.log('Response:', response.data);
+//   } catch (error) {
+//     console.error('Error:', error.message);
+//   } console.error('Keep-alive request error:', error);
+// });
 
 module.exports = app;
 

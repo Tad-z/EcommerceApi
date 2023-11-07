@@ -3,8 +3,8 @@ const cookieParser = require("cookie-parser")
 const app = express();
 app.use(cookieParser());
 require("dotenv").config();
-const cron = require('node-cron');
-const axios = require('axios')
+// const cron = require('node-cron');
+// const axios = require('axios')
 const main = require("./models/db");
 const productRouter = require("./routes/products");
 const cartRouter = require("./routes/cart");
@@ -45,15 +45,15 @@ app.use("/cart", cartRouter);
 app.use("/orders", orderRouter);
 app.use("/user", userROuter);
 
-cron.schedule('*/14 * * * *', async () => {
-  try {
-    // Make a GET request to a specific endpoint (e.g., /api/keep-alive)
-    const response = await axios.get(`https://emaxapi.onrender.com/products/`)
-    console.log('Response:', response.data);
-  } catch (error) {
-    console.error('Error:', error.message);
-  } console.error('Keep-alive request error:', error);
-});
+// cron.schedule('*/14 * * * *', async () => {
+//   try {
+//     // Make a GET request to a specific endpoint (e.g., /api/keep-alive)
+//     const response = await axios.get(`https://emaxapi.onrender.com/products/`)
+//     console.log('Response:', response.data);
+//   } catch (error) {
+//     console.error('Error:', error.message);
+//   } console.error('Keep-alive request error:', error);
+// });
 
 module.exports = app;
 

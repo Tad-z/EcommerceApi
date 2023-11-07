@@ -50,7 +50,8 @@ exports._getOrders = async (req, res) => {
 exports._sendMail = async (req, res) => {
     if (req.method === 'POST') {
         try {
-          const orderData = req.body; 
+            console.log("orderData", req.body)
+          const { orderData } = req.body; 
           await sendOrderConfirmationEmail(orderData);
           res.status(200).json({ message: 'Order placed and email sent.' });
         } catch (error) {

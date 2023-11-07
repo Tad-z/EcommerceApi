@@ -4,8 +4,9 @@ const Cart = require("../models/cart");
 const Product = require("../models/products");
 const { mappedProductss } = require("../services/cart.services");
 const { mappedOrders } = require("../services/orders.service");
+const { sendOrderConfirmationEmail } = require("../services/email.service");
 
-exports.postOrder = async (req, res) => {
+exports._postOrder = async (req, res) => {
     const user = req.userData;
     console.log(user);
     const cart = await Cart.find({ userId: user.userId }).exec();
@@ -29,7 +30,7 @@ exports.postOrder = async (req, res) => {
     }
 }
 
-exports.getOrders = async (req, res) => {
+exports._getOrders = async (req, res) => {
     try {
         const orders = await Order.find({ userId: req.userData.userId }).exec();
 
@@ -46,7 +47,21 @@ exports.getOrders = async (req, res) => {
     }
 };
 
-exports.clearOrders = async (req, res) => {
+exports._sendMail = async (req, res) => {
+    if (req.method === 'POST') {
+        try {
+          const orderData = req.body; 
+          await sendOrderConfirmationEmail(orderData);
+          res.status(200).json({ message: 'Order placed and email sent.' });
+        } catch (error) {
+          res.status(500).json({ error });
+        }
+      } else {
+        res.status(405).end();
+      }
+};
+
+exports._clearOrders = async (req, res) => {
     try {
         await Order.deleteMany({}).then((data) => {
             res.json({

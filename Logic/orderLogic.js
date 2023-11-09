@@ -35,7 +35,7 @@ exports._getOrders = async (req, res) => {
         const orders = await Order.find({ userId: req.userData.userId }).exec();
 
         if (!orders.length) return res.json([]);
-        const order = await mappedOrders(orders); 
+        const order = await mappedOrders(orders);
         res.status(200).json({
             message: "Orders retrieved successfully",
             count: orders.length,
@@ -50,16 +50,22 @@ exports._getOrders = async (req, res) => {
 exports._sendMail = async (req, res) => {
     if (req.method === 'POST') {
         try {
-            console.log("orderData", req.body)
-          const { orderData } = req.body; 
-          await sendOrderConfirmationEmail(orderData);
-          res.status(200).json({ message: 'Order placed and email sent.' });
+            let { orderData } = req.body;
+            orderData = JSON.parse(JSON.stringify(orderData)); // Create a deep copy
+
+            // Replace backslashes with forward slashes in productImage URLs
+            orderData.cartItems.forEach(item => {
+                item.product.productImage = item.product.productImage.replace(/\\/g, '/');
+            });
+            await sendOrderConfirmationEmail(orderData);
+            res.status(200).json({ message: 'Order placed and email sent.' });
         } catch (error) {
-          res.status(500).json({ error });
+            console.error(error);
+            res.status(500).json({ error });
         }
-      } else {
+    } else {
         res.status(405).end();
-      }
+    }
 };
 
 exports._clearOrders = async (req, res) => {

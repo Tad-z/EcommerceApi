@@ -4,25 +4,28 @@
   <meta charset="utf-8">
   <title>Order Confirmation</title>
 </head>
-<body>
-  <header>
-    <h1>Order Confirmation</h1>
+<body style="background-color: #f7f7f1; color: black; padding: 20px;">
+  <header style="text-align: center;">
+    <img src="https://emaxapi.onrender.com/images/logo2.jpg" alt="EMAX" width="100" height="100" /> 
+    <h1 style="color: black;">Order Confirmation</h1>
   </header>
-  <main>
-    <p>Dear {{ name }},</p>
-    <p>Thank you for placing an order with EMAX. Your order details are as follows:</p>
+  <main style="color: black;">
+    <p style="color: black;">Dear {{ name }},</p>
+    <p style="color: black;">Thank you for placing an order with EMAX. Your order details are as follows:</p>
 
-    <table>
+    <table style="color: black;">
       <thead>
-        <tr>
+        <tr style="color: black;">
+          <th>Image</th>
           <th>Product</th>
           <th>Quantity</th>
           <th>Price</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody style="text-align: center;">
         {{#each orderItems}}
-          <tr>
+          <tr style="color: black;">
+            <td><img src="https://emaxapi.onrender.com/{{product.productImage}}" alt="{{ product.title }}" width="100" height="100" /></td>
             <td>{{ product.title }}</td>
             <td>{{ quantity }}</td>
             <td>₦{{ product.price }}</td>
@@ -33,12 +36,12 @@
 
     {{!-- <p>Total Price: ${{ totalOrderPrice }}</p> --}}
     
-    <p>Shipping Address: {{ fullname }}, {{ adress }}, {{ city }}</p>
+    <p style="margin-bottom: 10px;">Shipping Address: {{ fullname }}, {{ adress }}, {{ city }}</p>
     
     <p>Thank you for shopping with us. If you have any questions, please contact us at support@emax.com.</p>
   </main>
   <footer>
-    <p>&copy; 2023 EMAX. All rights reserved.</p>
+    <p style="text-align: center;">&copy; 2023 EMAX. All rights reserved.</p>
   </footer>
 </body>
 </html>

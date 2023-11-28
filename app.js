@@ -3,8 +3,8 @@ const cookieParser = require("cookie-parser")
 const app = express();
 app.use(cookieParser());
 require("dotenv").config();
-// const cron = require('node-cron');
-// const axios = require('axios')
+const cron = require('node-cron');
+const axios = require('axios')
 const main = require("./models/db");
 const productRouter = require("./routes/products");
 const cartRouter = require("./routes/cart");
